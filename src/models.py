@@ -17,6 +17,8 @@ def get_model(model_name, train_set=None):
 
     elif model_name == "resnet34":
         model = ResNet([3, 4, 6, 3], num_classes=10)
+    elif model_name == "resnet18":
+        model = ResNet([2, 2, 2, 2], num_classes=10)
 
     elif model_name == "resnet34_100":
         model = ResNet([3, 4, 6, 3], num_classes=100)

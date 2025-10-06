@@ -59,6 +59,7 @@ EXP_GROUPS = {
             "max_epoch":[50],
             "runs":run_list},
 
+
     # main dl experiments
     "figure3_mnist":{"dataset":["mnist"],
             "model":["mlp"],
@@ -76,7 +77,7 @@ EXP_GROUPS = {
             "loss_func": ["softmax_loss"],
             "opt":opt_list_deep + others_opt_list,
             "acc_func":["softmax_accuracy"],
-            "batch_size":[128],
+            "batch_size":[1024],
             "max_epoch":[200],
             "runs":run_list},
 
@@ -90,12 +91,12 @@ EXP_GROUPS = {
             "runs":run_list},
 
         "polyak":{"dataset":["cifar10"],
-            "model":["resnet34", "densenet121"],
+            "model":["resnet18"],
             "loss_func": ["softmax_loss"],
-            "opt":["sgd_polyak"],
+            "opt":[{"name":"sgd_polyak"}],
             "acc_func":["softmax_accuracy"],
-            "batch_size":[128],
-            "max_epoch":[200],
+            "batch_size":[16384],
+            "max_epoch":[600],
             "runs":run_list},
 
         "cifar10":{"dataset":["cifar10"],
@@ -106,6 +107,17 @@ EXP_GROUPS = {
             "batch_size":[128],
             "max_epoch":[200],
             "runs":[0,1,6,7]},
+
+        "10-06":{"dataset":["cifar10"],
+            "model":["resnet18"],
+            "loss_func": ["softmax_loss"],
+            "opt":[{"name":"sgd_polyak"}],
+            "acc_func":["softmax_accuracy"],
+            "batch_size":[16384, 128],
+            "max_epoch":[600],
+            "runs":run_list},
+
+        
 
     # kernel experiments
     "figure6":{"dataset":kernel_datasets,

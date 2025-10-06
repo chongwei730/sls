@@ -54,9 +54,11 @@ class Sls(torch.optim.Optimizer):
         self.state['n_forwards'] = 0
         self.state['n_backwards'] = 0
 
-    def step(self, closure):
+    def step(self, closure, start):
         # deterministic closure
         seed = time.time()
+        print(self.state['step_size'], start)
+
         def closure_deterministic():
             with ut.random_seed_torch(int(seed)):
                 return closure()
@@ -66,6 +68,15 @@ class Sls(torch.optim.Optimizer):
         # get loss and compute gradients
         loss = closure_deterministic()
         loss.backward()
+
+        if start == 1:
+            for group in self.param_groups:
+                params = group["params"]
+                params_current = copy.deepcopy(params)
+                grad_current = ut.get_grad_list(params)
+                ut.try_sgd_update(params, self.state['step_size'], params_current, grad_current)
+            return
+        
 
         # increment # forward-backward calls
         self.state['n_forwards'] += 1

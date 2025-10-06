@@ -2,6 +2,7 @@
 ### Python template
 # Byte-compiled / optimized / DLL files
 __pycache__/
+*/
 mlkit/
 *.py[cod]
 *$py.class
@@ -132,7 +133,8 @@ dmypy.json
 # Zip files
 *.zip.*
 *.zip
-
+*.png.*
+*.png
 # DS_Store
 *.DS_Store
 

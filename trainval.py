@@ -66,6 +66,7 @@ def trainval(exp_dict, savedir_base, datadir, reset=False, metrics_flag=True):
     # -----------
     model = models.get_model(exp_dict["model"],
                              train_set=train_set).cuda()
+    model = torch.nn.DataParallel(model).cuda()
     # Choose loss and metric function
     loss_function = metrics.get_metric_function(exp_dict["loss_func"])
 
@@ -118,6 +119,7 @@ def trainval(exp_dict, savedir_base, datadir, reset=False, metrics_flag=True):
         print("%d - Training model with %s..." % (epoch, exp_dict["loss_func"]))
 
         s_time = time.time()
+        start = 0
         for images,labels in tqdm.tqdm(train_loader):
             images, labels = images.cuda(), labels.cuda()
 
@@ -125,7 +127,8 @@ def trainval(exp_dict, savedir_base, datadir, reset=False, metrics_flag=True):
 
             if exp_dict["opt"]["name"] in exp_configs.ours_opt_list + ["l4"]:
                 closure = lambda : loss_function(model, images, labels, backwards=False)
-                opt.step(closure)
+                opt.step(closure, start)
+                start = 1
 
             else:
                 loss = loss_function(model, images, labels)

@@ -21,7 +21,7 @@ class SlsAcc(torch.optim.Optimizer):
         self.params = params
         self.momentum = momentum
         self.c = c
-        self.beta_b = beta_b
+        self.beta_b = 0.5
         self.gamma = gamma
         self.init_step_size = init_step_size
         self.acceleration_method = acceleration_method
@@ -48,8 +48,9 @@ class SlsAcc(torch.optim.Optimizer):
         else:
             raise ValueError("%s is not supported" % acceleration_method)
 
-    def step(self, closure):
+    def step(self, closure, start):
         # deterministic closure
+ 
         seed = time.time()
         def closure_deterministic():
             with ut.random_seed_torch(int(seed)):
@@ -59,13 +60,21 @@ class SlsAcc(torch.optim.Optimizer):
 
         step_size = ut.reset_step(step_size=batch_step_size,
                                    gamma=self.gamma,
-                                   reset_option=self.reset_option,
+                                   reset_option=2,
                                    init_step_size=self.init_step_size)
 
         # get loss and compute gradients
         loss = closure_deterministic()
         loss.backward()
 
+
+        if start == 1:
+            for group in self.param_groups:
+                params = group["params"]
+                params_current = copy.deepcopy(params)
+                grad_current = ut.get_grad_list(params)
+                ut.try_sgd_update(params, self.state['step_size'], params_current, grad_current)
+            return
         # increment # forward-backward calls
         self.state['n_forwards'] += 1
         self.state['n_backwards'] += 1

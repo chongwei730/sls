@@ -1,5 +1,5 @@
 import numpy as np
-from ... import sls
+import sls
 from . import others
 
 import torch
