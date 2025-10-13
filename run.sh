@@ -18,7 +18,26 @@ conda activate sls
 
 gpuid=5
 echo "Using GPU: $CUDA_VISIBLE_DEVICES"
-python trainval.py -e 10-06 -sb ./10-06_results -d ./data -r 4
+
+    echo "=============================================="
+    echo "Running experiment with SEED=${seed}"
+    echo "=============================================="
+    
+    SAVE_ROOT="./baseline_results_seed"
+
+    python trainval.py \
+        -e baseline \
+        -sb ${SAVE_ROOT} \
+        -d ./data \
+        -r 4 \
+
+    SAVE_ROOT="./real_polyak"
+
+    python trainval.py \
+        -e 10-06 \
+        -sb ${SAVE_ROOT} \
+        -d ./data \
+        -r 4 \
 
 
 

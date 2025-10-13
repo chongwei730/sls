@@ -74,6 +74,19 @@ class SlsAcc(torch.optim.Optimizer):
                 params_current = copy.deepcopy(params)
                 grad_current = ut.get_grad_list(params)
                 ut.try_sgd_update(params, self.state['step_size'], params_current, grad_current)
+                if self.acceleration_method == "polyak":
+                    params_old = copy.deepcopy(self.state['params_current'])
+                    self.state['params_current'] = params_current
+
+                    polyak_update(self.params, self.state['params_current'], grad_current,
+                                params_old, self.momentum)
+
+                elif self.acceleration_method == "nesterov":
+                    y_params = copy.deepcopy(self.params)
+                    nesterov_update(self.params, grad_current,
+                                    y_params_old=self.state["y_params_old"],
+                                    gamma=self.state['tau'])
+                    self.state["y_params_old"] = copy.deepcopy(y_params)
             return
         # increment # forward-backward calls
         self.state['n_forwards'] += 1

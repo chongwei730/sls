@@ -13,7 +13,7 @@ from src import datasets, models, optimizers, metrics
 from haven import haven_utils as hu
 from haven import haven_results as hr
 from haven import haven_chk as hc
-from haven import haven_jupyter as hj
+
 
 
 def trainval(exp_dict, savedir_base, datadir, reset=False, metrics_flag=True):
@@ -36,7 +36,7 @@ def trainval(exp_dict, savedir_base, datadir, reset=False, metrics_flag=True):
     
     # set seed
     # ---------------
-    seed = 42 + exp_dict['runs']
+    seed = args.seed + exp_dict['runs']
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
@@ -111,8 +111,8 @@ def trainval(exp_dict, savedir_base, datadir, reset=False, metrics_flag=True):
                                                 metric_name=exp_dict["loss_func"])
 
             # 2. Compute val acc over val set
-            score_dict["val_acc"] = metrics.compute_metric_on_dataset(model, val_set,
-                                                        metric_name=exp_dict["acc_func"])
+            # score_dict["val_acc"] = metrics.compute_metric_on_dataset(model, val_set,
+            #                                             metric_name=exp_dict["acc_func"])
 
         # 3. Train over train loader
         model.train()
@@ -165,6 +165,7 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--datadir', required=True)
     parser.add_argument('-r', '--reset',  default=0, type=int)
     parser.add_argument('-ei', '--exp_id', default=None)
+    parser.add_argument('--seed', type=int, default=42)
 
     args = parser.parse_args()
 

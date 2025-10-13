@@ -113,7 +113,16 @@ EXP_GROUPS = {
             "loss_func": ["softmax_loss"],
             "opt":[{"name":"sgd_polyak"}],
             "acc_func":["softmax_accuracy"],
-            "batch_size":[16384, 128],
+            "batch_size":[16384],
+            "max_epoch":[600],
+            "runs":run_list},
+
+        "baseline":{"dataset":["cifar10"],
+            "model":["resnet18"],
+            "loss_func": ["softmax_loss"],
+            "opt":[{"name":"sgd_polyak"}],
+            "acc_func":["softmax_accuracy"],
+            "batch_size":[128],
             "max_epoch":[600],
             "runs":run_list},
 
